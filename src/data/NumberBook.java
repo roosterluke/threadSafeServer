@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
+
 public class NumberBook {
 	
 	private static int num = 1;
@@ -29,7 +31,7 @@ public class NumberBook {
 
 	// Opens file to ensure non-duplicate entry and updates before closing.
 	// Returns false if duplicate record exists, returns true if new record added
-	public synchronized static boolean saveNumber(String number) throws Exception {
+	public synchronized static boolean saveNumber(String number, ServletContext sc) throws Exception {
 		File file = new File(logFileLocation);
 		Path fileLocation = Paths.get(logFileLocation);
 		BufferedReader br = new BufferedReader(new FileReader(logFileLocation));
@@ -39,19 +41,21 @@ public class NumberBook {
 			existingRecords.add(fileContents.toString());
 		}
 		if(existingRecords.contains(number)) {
+			int totalRecordsRejected = (int) sc.getAttribute("recordsRejectedClockCounter");
+			totalRecordsRejected+=1;
+			sc.setAttribute("recordsRejectedClockCounter", totalRecordsRejected);
 			return false;
 		} else {
 			List<String> lines = Arrays.asList(number);
 			Files.write(fileLocation, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
+			int totalRecordsAdded = (int) sc.getAttribute("recordsInsertedTotalCounter");
+			int totalRecordsClock = (int) sc.getAttribute("recordsInsertedClockCounter");
+			totalRecordsAdded+=1;
+			totalRecordsClock+=1;
+			sc.setAttribute("recordsInsertedTotalCounter", totalRecordsAdded);
+			sc.setAttribute("recordsInsertedClockCounter", totalRecordsClock);
 			return true;
 		}
 	}
 	
-	public String getNumber() {
-		return String.valueOf(num);
-	}
-	
-	public boolean validateUniqueEntry(String number) {
-		return false;
-	}
 }

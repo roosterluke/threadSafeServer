@@ -33,8 +33,6 @@ public class RequestHandler extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
-		NumberBook book = (NumberBook) request.getServletContext().getAttribute("book");
-		response.getWriter().append("Book Number: ").append(book.getNumber());
 	}
 
 	/**
@@ -48,11 +46,13 @@ public class RequestHandler extends HttpServlet {
 		RequestValidator validator = new RequestValidator();
 		if(validator.isValidNumber(request.getParameter("number"), (HashSet<Character>) sc.getAttribute("validChars"))) {
 			try {
-				book.saveNumber(numberPosted);
+				book.saveNumber(numberPosted, sc);
 			} catch (Exception e) {
 				System.out.println(".txt file could not be found");
 				e.printStackTrace();
 			}
+		} else if (numberPosted.equals("terminated")) {
+			System.exit(0); // close the JVM
 		} else {
 			return; // POST data is not well formed
 		}
