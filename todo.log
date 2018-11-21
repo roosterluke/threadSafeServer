@@ -1,8 +1,0 @@
-- Define POST attribute as 9 digit number
-- Simulate POST via Postman
-- validate input is well formed
-- READ file data into memory as hash map
-- write method to check for duplicate entry
-- WRITE new data entry into file
-+ write program to simulate 5 threads continuously writing to file (3 hours)
-+ dockerize program to deploy to *nix box (5 hours)

@@ -1,18 +1,21 @@
 from locust import HttpLocust, TaskSet
 import random
 
-def postNumber(l):
+def postRandomNumber(l):
     randomNumber = random.randint(100000000,999999999)
     l.client.post("/numbers", {"number":randomNumber})
+    
+def postKnownDuplicate(l):
+    l.client.post("/numbers", {"number":111111111})
 
 class UserBehavior(TaskSet):
-    tasks = {postNumber: 1}
+    tasks = {postRandomNumber: 10, postKnownDuplicate: 1}
 
     def on_start(self):
-        postNumber(self)
+        postRandomNumber(self)
 
     def on_stop(self):
-        postNumber(self)
+        postRandomNumber(self)
 
 class WebsiteUser(HttpLocust):
     task_set = UserBehavior

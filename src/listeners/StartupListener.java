@@ -15,12 +15,6 @@ import data.NumberBook;
 
 public class StartupListener implements ServletContextListener {
 	
-	Runnable requestMonitor = new Runnable() {
-	    public void run() {
-	        System.out.println("Hello world");
-	    }
-	};
-	
 	public void contextInitialized(ServletContextEvent event) {
 		ServletContext sc = event.getServletContext();
 		NumberBook book = new NumberBook();
